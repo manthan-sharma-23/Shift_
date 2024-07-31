@@ -79,33 +79,3 @@ dist/
 # MacOS
 .DS_Store
 
-# Docker
-Dockerfile
-.dockerignore
-
-# Ignore Docker build artifacts
-**/Dockerfile
-**/docker-compose*.yml
-**/.dockerignore
-!Dockerfile.mainserver
-!Dockerfile.user-container
-
-# Docker volumes
-/volumes
-
-# AWS credentials
-.aws
-
-# misc
-*.swp
-*.swo
-
-# OS generated files
-Thumbs.db
-ehthumbs.db
-
-# IDEs and editors
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace

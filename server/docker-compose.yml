@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  mainserver:
+    build:
+      context: .
+      dockerfile: ./src/docker/Dockerfile.main-server
+    ports:
+      - '3000:3000'
+    networks:
+      - lynx-network
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /usr/src/app/src
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+
+networks:
+  lynx-network:
+    driver: bridge
