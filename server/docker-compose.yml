@@ -6,9 +6,11 @@ services:
       context: .
       dockerfile: ./src/docker/Dockerfile.main-server
     ports:
-      - '3000:3000'
+      - 3000:3000
     networks:
       - lynx-network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     develop:
       watch:
         - action: sync

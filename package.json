@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@types/dockerode": "^3.3.31"
+  }
+}
