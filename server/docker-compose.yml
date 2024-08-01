@@ -4,7 +4,7 @@ services:
   mainserver:
     build:
       context: .
-      dockerfile: ./src/docker/Dockerfile.main-server
+      dockerfile: ./src/engine/docker/Dockerfile.main-server
     ports:
       - 3000:3000
     networks:

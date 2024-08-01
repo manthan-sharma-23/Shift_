@@ -1,3 +1,10 @@
+import * as env from 'dotenv';
+
+env.config();
 export const configurations = {
-  network: 'lynx-network',
+  container: { network: 'lynx-network' },
+  app: {},
+  env: {
+    JWT_SECRET: process.env.JWT_SECRET || '',
+  },
 };
