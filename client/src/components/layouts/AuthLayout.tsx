@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import logo from "../../../public/icon.svg";
+import logo from "/icon.svg";
 
 const MyComponent = () => {
   const navigate = useNavigate();
@@ -12,7 +12,6 @@ const MyComponent = () => {
         className="cursor-pointer absolute shadow-md shadow-black/30 bg-white text-black top-0 left-0 h-[2.5rem] overflow-hidden w-auto p-1 rounded-md ml-5 mt-5 flex justify-start px-3 items-center gap-2"
       >
         <img src={logo} className=" h-[75%]" />
-       
       </div>
       <Outlet />
     </div>

@@ -1,17 +1,45 @@
-
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Link } from "react-router-dom";
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import Server from "@/core/api/api";
+import { AuthenticateUser } from "@/core/types/user.types";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const Signin = () => {
+  const [user, setUser] = useState<Partial<AuthenticateUser>>({});
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = () => {
+    if (user.email && user.password) {
+      setLoading(true);
+      new Server()
+        .login_user({ email: user.email, password: user.password })
+        .then((meta) => {
+           setLoading(false);
+          if (meta.isLoggedIn) {
+            toast.success(meta.message);
+            setTimeout(() => {
+              navigate("/app");
+            }, 1000);
+          } else {
+            toast.error(meta.message);
+          }
+        });
+    } else {
+      toast.error("Please add both email and password !");
+    }
+  };
+
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
@@ -28,7 +56,11 @@ const Signin = () => {
               id="email"
               type="email"
               placeholder="m@example.com"
+              onChange={(e) => {
+                setUser((user) => ({ ...user, email: e.target.value }));
+              }}
               required
+              disabled={loading}
             />
           </div>
           <div className="grid gap-2">
@@ -38,13 +70,26 @@ const Signin = () => {
                 Forgot your password?
               </Link>
             </div>
-            <Input id="password" type="password" required />
+            <Input
+              id="password"
+              type="password"
+              required
+              onChange={(e) => {
+                setUser((user) => ({ ...user, password: e.target.value }));
+              }}
+              disabled={loading}
+            />
           </div>
-          <Button type="submit" className="w-full">
+          <Button
+            disabled={loading}
+            onClick={handleLogin}
+            type="submit"
+            className="w-full"
+          >
             Login
           </Button>
-          <Button variant="outline" className="w-full">
-            Login with Google
+          <Button disabled={loading} variant="outline" className="w-full">
+            Login with Github
           </Button>
         </div>
         <div className="mt-4 text-center text-sm">

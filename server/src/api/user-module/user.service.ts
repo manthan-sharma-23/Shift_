@@ -5,7 +5,6 @@ import {
   MisdirectedException,
   NotFoundException,
 } from '@nestjs/common';
-import { log } from 'console';
 import { Request } from 'express';
 import { BcryptService } from 'src/engine/core/services/Bcrypt.service';
 import { JwtService } from 'src/engine/core/services/Jwt.service';
@@ -42,7 +41,7 @@ export default class UserService {
       if (isPasswordCorrect) {
         const token = this.jwtService.sign_token({ userId: user.id });
 
-        return { token, message: 'user Logged in successfully' };
+        return { token, message: 'User logged in successfully' };
       } else {
         throw new ForbiddenException('Password input is incorrect');
       }
@@ -65,7 +64,7 @@ export default class UserService {
       });
 
       if (user) {
-        throw new MisdirectedException('User already Signed Up, Please Login');
+        throw new MisdirectedException('User already signed up, please login');
       }
 
       const hash = await this.bcryptService.hash_password(input.password);
@@ -106,6 +105,7 @@ export default class UserService {
           name: true,
           createdAt: true,
           image: true,
+          id: true,
         },
       });
 
