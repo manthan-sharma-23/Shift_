@@ -25,7 +25,7 @@ const Signin = () => {
       new Server()
         .login_user({ email: user.email, password: user.password })
         .then((meta) => {
-           setLoading(false);
+          setLoading(false);
           if (meta.isLoggedIn) {
             toast.success(meta.message);
             setTimeout(() => {
@@ -34,6 +34,10 @@ const Signin = () => {
           } else {
             toast.error(meta.message);
           }
+        })
+        .catch((err: { response: { data: { message: string } } }) => {
+          setLoading(false);
+          toast.error(err.response.data.message);
         });
     } else {
       toast.error("Please add both email and password !");

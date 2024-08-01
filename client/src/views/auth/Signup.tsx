@@ -45,6 +45,10 @@ export default function Signup() {
           } else {
             toast.error(meta.message);
           }
+        })
+        .catch((err: { response: { data: { message: string } } }) => {
+          setLoading(false);
+          toast.error(err.response.data.message);
         });
     } else {
       toast.error("Please add both email and password !");

@@ -4,10 +4,15 @@ FROM node:21
 
 WORKDIR /usr/src/app
 
+
 COPY package*.json ./
 RUN npm install
 
 COPY . .
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
+
+RUN npm run db:migrate
 
 EXPOSE 3000
 CMD ["npm", "run", "dev"]

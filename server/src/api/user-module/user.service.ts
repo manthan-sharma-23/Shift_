@@ -43,7 +43,7 @@ export default class UserService {
 
         return { token, message: 'User logged in successfully' };
       } else {
-        throw new ForbiddenException('Password input is incorrect');
+        throw new ForbiddenException('Incorrect user credentials');
       }
     } catch (error) {
       console.log(error);

@@ -2,15 +2,21 @@ version: '3'
 
 services:
   mainserver:
+    depends_on:
+      - postgresdb
     build:
       context: .
       dockerfile: ./src/engine/docker/Dockerfile.main-server
+      args:
+        - DATABASE_URL="postgresql://postgres:postgres@postgresdb/lynx?schema=public"
     ports:
       - 3000:3000
-    networks:
-      - lynx-network
+
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgresdb/lynx?schema=public
+      - JWT_SECRET=your_jwt_secret
     develop:
       watch:
         - action: sync
@@ -20,7 +26,25 @@ services:
             - node_modules/
         - action: rebuild
           path: package.json
+        - action: rebuild
+          path: ./src/engine/database/prisma/schema.prisma
+
+  postgresdb:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: lynx
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
 
 networks:
   lynx-network:
     driver: bridge
+
+volumes:
+  postgres-data:
