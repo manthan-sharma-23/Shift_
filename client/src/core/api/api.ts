@@ -14,7 +14,6 @@ export default class Server {
         },
       })
     ).data as User;
-
     return data;
   }
   async login_user(user: AuthenticateUser) {

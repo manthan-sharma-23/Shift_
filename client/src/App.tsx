@@ -6,6 +6,7 @@ import Signup from "./views/auth/Signup";
 import { Toaster } from "@/components/ui/sonner";
 import RootLayout from "./components/layouts/RootLayout";
 import Home from "./views/app/Home";
+import Projects from "./views/app/Projects/Projects";
 
 const App = () => {
   return (
@@ -18,7 +19,9 @@ const App = () => {
               <Route path="/auth/signup" element={<Signup />} />
             </Route>
             <Route path="/app" element={<RootLayout />}>
-              <Route index element={<Home />} />
+              <Route path="/app" element={<Home />}>
+                <Route path="/app/projects" element={<Projects />} />
+              </Route>
             </Route>
           </Routes>
           <Toaster />

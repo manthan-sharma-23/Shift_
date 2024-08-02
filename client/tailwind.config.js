@@ -81,8 +81,16 @@ module.exports = {
         fifth: "moveInCircle 20s ease infinite",
         gradientMove: "gradientMove 8s ease infinite",
       },
-      fontFamily:{
-        poppins:"Poppins"
+      fontFamily: {
+        poppins: "Poppins"
+      },
+      colors: {
+        primary: {
+          DEFAULT: "#111111",
+          dark: "#0F0F0F",
+          light: "#121113"
+        }
+
       }
     },
   },

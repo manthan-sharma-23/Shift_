@@ -29,7 +29,7 @@ const Signin = () => {
           if (meta.isLoggedIn) {
             toast.success(meta.message);
             setTimeout(() => {
-              navigate("/app");
+              navigate("/app/projects");
             }, 1000);
           } else {
             toast.error(meta.message);

@@ -40,7 +40,7 @@ export default function Signup() {
           if (meta.isLoggedIn) {
             toast.success(meta.message);
             setTimeout(() => {
-              navigate("/app");
+              navigate("/app/projects");
             }, 1000);
           } else {
             toast.error(meta.message);
@@ -50,6 +50,8 @@ export default function Signup() {
           setLoading(false);
           toast.error(err.response.data.message);
         });
+
+      
     } else {
       toast.error("Please add both email and password !");
     }
