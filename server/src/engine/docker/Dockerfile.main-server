@@ -12,7 +12,8 @@ COPY . .
 ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
 
-RUN npm run db:migrate
+RUN chmod +x /usr/src/app/entrypoint.sh
+
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
 
 EXPOSE 3000
-CMD ["npm", "run", "dev"]

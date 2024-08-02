@@ -21,6 +21,10 @@ export class ContainerService {
     });
   }
 
+  async create_project(containerId: string) {
+    
+  }
+
   async spawn_container(containerName: string) {
     const containers = await this.docker.listContainers({ all: true });
     const existingContainer = containers.find((container) =>

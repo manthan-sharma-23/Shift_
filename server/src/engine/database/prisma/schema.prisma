@@ -18,7 +18,17 @@ model User {
   name      String?
   email     String   @unique
   image     String?
-  password String
+  password  String
   createdAt DateTime @default(now())
+  Cube      Cube[]
 }
 
+model Cube {
+  id        String   @id @unique @default(uuid())
+  name      String
+  type      String
+  url       String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+}

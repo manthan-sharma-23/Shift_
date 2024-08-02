@@ -9,5 +9,7 @@ export const configurations = {
   app: {},
   env: {
     JWT_SECRET: process.env.JWT_SECRET || '',
+    S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY,
+    S3_ACCESS_KEY: process.env.S3_ACCESS_KEY,
   },
 };
