@@ -1,13 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { FaTools } from "react-icons/fa";
 import { IoAdd } from "react-icons/io5";
-import { FaCube } from "react-icons/fa";
-import { useRecoilValue } from "recoil";
-import { UserAtom } from "@/core/store/atoms/user.atom";
+import { PiCubeFill } from "react-icons/pi";
 
 const Projects = () => {
-  const user = useRecoilValue(UserAtom);
-
   return (
     <div className="h-full w-full flex flex-col justify-start items-center">
       <div className="h-[25vh] w-full">
@@ -23,7 +18,7 @@ const Projects = () => {
             <p>Create Cube</p>
           </Button>
           <Button className="gap-2 ">
-            <FaCube />
+            <PiCubeFill />
             <p>Explore Cubes</p>
           </Button>
         </div>

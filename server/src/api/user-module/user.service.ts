@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { BcryptService } from 'src/engine/core/services/Bcrypt.service';
+import { ContainerService } from 'src/engine/core/services/Container.service';
 import { JwtService } from 'src/engine/core/services/Jwt.service';
 import DatabaseService from 'src/engine/database/Database.service';
 import { UserValidator } from 'src/engine/types/validators/user.validator';
@@ -17,6 +18,7 @@ export default class UserService {
     private database: DatabaseService,
     private bcryptService: BcryptService,
     private jwtService: JwtService,
+    private containerService: ContainerService,
   ) {}
 
   async login_user(req: Request) {
@@ -39,7 +41,13 @@ export default class UserService {
       );
 
       if (isPasswordCorrect) {
-        const token = this.jwtService.sign_token({ userId: user.id });
+        const container = await this.containerService.spawn_container(
+          `user-container-${user.id}`,
+        );
+        const token = this.jwtService.sign_token({
+          userId: user.id,
+          containerId: container.id,
+        });
 
         return { token, message: 'User logged in successfully' };
       } else {
@@ -77,7 +85,13 @@ export default class UserService {
         },
       });
 
-      const token = this.jwtService.sign_token({ userId: user.id });
+      const container = await this.containerService.spawn_container(
+        `user-container-${user.id}`,
+      );
+      const token = this.jwtService.sign_token({
+        userId: user.id,
+        containerId: container.id,
+      });
 
       return { token, message: 'User Registered Successfully' };
     } catch (error) {
@@ -88,7 +102,8 @@ export default class UserService {
 
   async get_user(req: Request) {
     try {
-      const userId = req.user.userId as string;
+      console.log(req.user);
+      const userId = req.user.userId;
 
       if (!userId) {
         throw new ForbiddenException('User not authorized');

@@ -1,9 +1,9 @@
-import { JwtDecodedData } from './engine/types/jwt.types';
+import { JwtPayload } from 'jsonwebtoken';
 
 declare global {
   namespace Express {
     interface Request {
-      user?: JwtDecodedData & { userId: string };
+      user: { userId: string; containerId: string } & JwtPayload;
     }
   }
 }
