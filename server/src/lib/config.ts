@@ -3,7 +3,7 @@ import * as env from 'dotenv';
 env.config();
 export const configurations = {
   container: {
-    user_container_image: 'manthan23s/lynx-user-container:latest',
+    user_container_image: 'manthan23s/lynx-user-container',
     network: 'server_lynx-network',
   },
   app: {},
