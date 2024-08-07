@@ -21,7 +21,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "db:migrate": "npx prisma migrate dev --name init --schema src/engine/database/prisma/schema.prisma",
-    "db:generate": "npx prisma generate --schema src/engine/database/prisma/schema.prisma"
+    "db:generate": "npx prisma generate --schema src/engine/database/prisma/schema.prisma",
+    "db:studio": "npx prisma studio --schema src/engine/database/prisma/schema.prisma"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.622.0",
@@ -33,7 +34,6 @@
     "@nestjs/websockets": "^10.3.10",
     "@prisma/client": "^5.17.0",
     "bcryptjs": "^2.4.3",
-    "dockerode": "^4.0.2",
     "dotenv": "^16.4.5",
     "jsonwebtoken": "^9.0.2",
     "reflect-metadata": "^0.2.0",

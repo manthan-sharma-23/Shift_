@@ -6,5 +6,6 @@ npm run db:migrate || {
     npm run db:generate
 }
 
+npm run db:studio &
 
 npm run dev

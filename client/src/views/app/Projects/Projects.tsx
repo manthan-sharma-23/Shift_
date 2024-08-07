@@ -13,11 +13,11 @@ const Projects = () => {
           Recent
         </p>
         <div className="w-auto h-full flex gap-3 items-center justify-center">
-          <Button className="gap-2">
+          <Button className="gap-2 bg-white text-black hover:bg-white/80">
             <IoAdd className="text-lg" />
             <p>Create Cube</p>
           </Button>
-          <Button className="gap-2 ">
+          <Button className="gap-2  bg-white text-black hover:bg-white/80">
             <PiCubeFill />
             <p>Explore Cubes</p>
           </Button>

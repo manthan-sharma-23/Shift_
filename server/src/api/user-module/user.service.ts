@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { BcryptService } from 'src/engine/core/services/Bcrypt.service';
-import { ContainerService } from 'src/engine/core/services/Container.service';
 import { JwtService } from 'src/engine/core/services/Jwt.service';
 import DatabaseService from 'src/engine/database/Database.service';
 import { UserValidator } from 'src/engine/types/validators/user.validator';
@@ -18,12 +17,13 @@ export default class UserService {
     private database: DatabaseService,
     private bcryptService: BcryptService,
     private jwtService: JwtService,
-    private containerService: ContainerService,
   ) {}
 
   async login_user(req: Request) {
     try {
       const input = UserValidator.parse(req.body);
+
+      console.log(input);
 
       const user = await this.database.user.findUnique({
         where: {
@@ -41,12 +41,8 @@ export default class UserService {
       );
 
       if (isPasswordCorrect) {
-        const container = await this.containerService.spawn_container(
-          `user-container-${user.id}`,
-        );
         const token = this.jwtService.sign_token({
           userId: user.id,
-          containerId: container.id,
         });
 
         return { token, message: 'User logged in successfully' };
@@ -85,12 +81,8 @@ export default class UserService {
         },
       });
 
-      const container = await this.containerService.spawn_container(
-        `user-container-${user.id}`,
-      );
       const token = this.jwtService.sign_token({
         userId: user.id,
-        containerId: container.id,
       });
 
       return { token, message: 'User Registered Successfully' };

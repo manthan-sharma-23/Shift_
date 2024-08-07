@@ -9,9 +9,9 @@ const useGetUser = () => {
 
   useEffect(() => {
     setLoading(true);
-    new Server().get_user().then((meta) => {
+    new Server().user.get_user().then((meta) => {
       setLoading(false);
-     
+
       if (meta.id) {
         setUser(meta);
       }

@@ -13,28 +13,40 @@ export default class CubeService {
 
   async create_cube(req: Request) {
     try {
-      const { containerId } = req.user;
+      const { userId } = req.user;
       const query = ProjectCreationInput.parse(req.body);
 
-      if (query.name && query.type) {
-        await this.containerService.create_project(containerId, {
+      const cube_modal = await this.databaseService.cube.create({
+        data: {
           name: query.name,
           type: query.type,
-        });
-      }
+          userId,
+        },
+      });
 
-      return { query, user: req.user };
+      await this.containerService.run_containers(cube_modal);
 
-      // const cube = await this.databaseService.cube.create({
-      //   data: {
-      //     name: query.name,
-      //     type: query.type,
-      //     userId,
-      //   },
-      // });
+      const res = await this.delay(10 * 1000, cube_modal);
+      return res;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async get_user_cubes(req: Request) {
+    const { userId } = req.user;
+
+    const cubes = await this.databaseService.cube.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    return cubes;
+  }
+
+  delay<T>(ms: number, result: T): Promise<T> {
+    return new Promise((resolve) => setTimeout(() => resolve(result), ms));
   }
 }

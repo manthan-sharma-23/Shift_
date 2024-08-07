@@ -14,7 +14,7 @@ PORT=$2
 echo "Creating a new React app with create-react-app..."
 
 # Create the project using npx create-react-app
-npx create-react-app ./
+npx create-react-app ./ -y
 # Install dependencies (not necessary as create-react-app installs them automatically)
 echo "Installing dependencies..."
 npm install &

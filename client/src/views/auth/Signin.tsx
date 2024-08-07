@@ -22,7 +22,7 @@ const Signin = () => {
   const handleLogin = () => {
     if (user.email && user.password) {
       setLoading(true);
-      new Server()
+      new Server().user
         .login_user({ email: user.email, password: user.password })
         .then((meta) => {
           setLoading(false);

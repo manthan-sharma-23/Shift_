@@ -30,7 +30,7 @@ export default function Signup() {
     if (user.email && user.password) {
       setLoading(true);
       new Server()
-        .register_user({
+        .user.register_user({
           name: combineLastAndFirstName(),
           email: user.email,
           password: user.password,

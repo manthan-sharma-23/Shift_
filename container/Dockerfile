@@ -20,6 +20,9 @@ RUN node -v && python3 --version
 
 # Install global npm packages
 RUN npm i -g nodemon vite
+RUN npm install -g create-react-app@5.0.1
+
+
 
 # Set the working directory
 WORKDIR /container
