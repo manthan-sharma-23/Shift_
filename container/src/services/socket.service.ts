@@ -2,6 +2,7 @@ import { Server } from "http";
 import * as Io from "socket.io";
 import * as pty from "node-pty";
 import { config } from "dotenv";
+import { configurations } from "../config";
 
 config();
 
@@ -21,6 +22,8 @@ export class SocketService {
       name: "vt100",
       rows: 40,
       cols: 30,
+      env: process.env,
+      cwd: configurations.fs.root+"/project",
     });
 
     try {
@@ -32,15 +35,13 @@ export class SocketService {
 
   private listenToEvents(io: Io.Server) {
     this.bash.onData((data) => {
-      console.log(typeof data);
-      console.log(data);
       this.io.emit("terminal:write", data);
     });
     io.on("connection", (socket) => {
       console.log("🔗 New client connected");
 
       socket.on("terminal:write", (data) => {
-        this.bash.write(data + "\n"); // Ensure commands are executed
+        this.bash.write(data + "\n");
       });
 
       socket.on("disconnect", () => {

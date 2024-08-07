@@ -19,4 +19,5 @@ server.listen(configurations.env.port, () => {
   console.log(
     `🐳 Playground Container Started for ${configurations.env.playgroundId} at ${configurations.env.port}`
   );
+  console.log(configurations.fs.root);
 });
