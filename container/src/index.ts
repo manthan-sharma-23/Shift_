@@ -10,6 +10,10 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true, limit: "100mb" }));
 
+app.get("/", (_, res) => {
+  return res.json({ status: "ALIVE 200 🟢" });
+});
+
 const server = new Server(app);
 
 new SocketService(server);
