@@ -23,7 +23,7 @@ export class SocketService {
       rows: 40,
       cols: 30,
       env: process.env,
-      cwd: configurations.fs.root+"/project",
+      cwd: configurations.fs.root + "/project",
     });
 
     try {
@@ -48,5 +48,9 @@ export class SocketService {
         console.log("🔌 Client disconnected");
       });
     });
+  }
+
+  private async getDirStructure() {
+    
   }
 }

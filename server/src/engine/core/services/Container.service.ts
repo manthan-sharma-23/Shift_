@@ -12,8 +12,8 @@ export class ContainerService {
   async run_containers(cube: Cube) {
     const container_name = `project-${cube.id}`;
 
-    const port1 = 3203;
-    const port2 = 4034;
+    const port1 = 3500;
+    const port2 = 4000;
 
     const docker_run_project_container_command = `
       docker run -d --name ${container_name} \

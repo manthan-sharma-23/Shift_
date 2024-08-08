@@ -7,26 +7,32 @@ import { Toaster } from "@/components/ui/sonner";
 import RootLayout from "./components/layouts/RootLayout";
 import Home from "./views/app/Home";
 import Projects from "./views/app/Projects/Projects";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import Editor from "./views/app/cde/Editor";
 
 const App = () => {
+  const queryClient = new QueryClient();
   return (
     <div>
-      <RecoilRoot>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/auth" element={<AuthLayout />}>
-              <Route path="/auth/signin" element={<Signin />} />
-              <Route path="/auth/signup" element={<Signup />} />
-            </Route>
-            <Route path="/app" element={<RootLayout />}>
-              <Route path="/app" element={<Home />}>
-                <Route path="/app/projects" element={<Projects />} />
+      <QueryClientProvider client={queryClient}>
+        <RecoilRoot>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/auth" element={<AuthLayout />}>
+                <Route path="/auth/signin" element={<Signin />} />
+                <Route path="/auth/signup" element={<Signup />} />
               </Route>
-            </Route>
-          </Routes>
-          <Toaster />
-        </BrowserRouter>
-      </RecoilRoot>
+              <Route path="/app" element={<RootLayout />}>
+                <Route path="/app" element={<Home />}>
+                  <Route path="/app/projects" element={<Projects />} />
+                </Route>
+                <Route path="/app/project/:projectId" element={<Editor />} />
+              </Route>
+            </Routes>
+            <Toaster />
+          </BrowserRouter>
+        </RecoilRoot>
+      </QueryClientProvider>
     </div>
   );
 };

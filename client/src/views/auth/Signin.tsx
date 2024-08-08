@@ -25,6 +25,8 @@ const Signin = () => {
       new Server().user
         .login_user({ email: user.email, password: user.password })
         .then((meta) => {
+          console.log(meta);
+
           setLoading(false);
           if (meta.isLoggedIn) {
             toast.success(meta.message);

@@ -4,11 +4,16 @@ import { AuthenticateUser, LoggedUser, User } from "../types/user.types";
 import { CreateCubeInput, Cube } from "../types/cube.types";
 
 export default class Server {
-  private server_url = configuration.server.http_url;
-  private token = "Bearer " + window.localStorage.getItem("token");
+  private server_url: string;
+  private token: string | null;
+
+  constructor() {
+    this.server_url = configuration.server.http_url;
+    this.token = "Bearer " + window.localStorage.getItem("token");
+  }
 
   // user controllers
-  private async get_user() {
+  private get_user = async (): Promise<User> => {
     const data = (
       await axios.get(this.server_url + "/v1/user/", {
         headers: {
@@ -17,32 +22,42 @@ export default class Server {
       })
     ).data as User;
     return data;
-  }
-  private async login_user(user: AuthenticateUser) {
+  };
+
+  private login_user = async (
+    user: AuthenticateUser
+  ): Promise<LoggedUser & { isLoggedIn: boolean }> => {
+    console.log("route -- ", this.server_url);
+
     const data = (await axios.post(this.server_url + "/v1/user/login", user))
       .data as LoggedUser;
 
     window.localStorage.setItem("token", data.token);
 
     if (data.token) {
+      this.token = "Bearer " + data.token;
       return { ...data, isLoggedIn: true };
     }
     return { ...data, isLoggedIn: false };
-  }
-  private async register_user(user: AuthenticateUser) {
+  };
+
+  private register_user = async (
+    user: AuthenticateUser
+  ): Promise<LoggedUser & { isLoggedIn: boolean }> => {
     const data = (await axios.post(this.server_url + "/v1/user/register", user))
       .data as LoggedUser;
 
     window.localStorage.setItem("token", data.token);
 
     if (data.token) {
+      this.token = "Bearer " + data.token;
       return { ...data, isLoggedIn: true };
     }
     return { ...data, isLoggedIn: false };
-  }
+  };
 
   // cube controllers
-  private async get_user_cubes() {
+  private get_user_cubes = async (): Promise<Cube[]> => {
     const data = (
       await axios.get(this.server_url + "/v1/cube/", {
         headers: {
@@ -52,17 +67,18 @@ export default class Server {
     ).data as Cube[];
 
     return data;
-  }
-  private async create_user_cube(input: CreateCubeInput) {
+  };
+
+  private create_user_cube = async (input: CreateCubeInput): Promise<Cube> => {
     const data = (
       await axios.post(this.server_url + "/v1/cube/create-cube", input, {
         headers: {
           Authorization: this.token,
         },
       })
-    ).data;
+    ).data as Cube;
     return data;
-  }
+  };
 
   get user() {
     return {
@@ -71,6 +87,7 @@ export default class Server {
       register_user: this.register_user,
     };
   }
+
   get cube() {
     return {
       get_user_cubes: this.get_user_cubes,

@@ -35,9 +35,10 @@ const AppBar = () => {
           ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
         </h1>
         {nav &&
-          nav.map((option) => {
+          nav.map((option, index) => {
             return (
               <Link
+                key={index}
                 to={option.href}
                 className={cn(
                   " w-full h-auto flex  justify-start items-center gap-3 hover:bg-white/5 px-2 py-1 rounded-md cursor-pointer",

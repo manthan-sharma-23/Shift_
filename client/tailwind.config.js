@@ -89,6 +89,9 @@ module.exports = {
           DEFAULT: "#111111",
           dark: "#0F0F0F",
           light: "#121113"
+        },
+        editor: {
+          DEFAULT: "#1E1E1E"
         }
 
       }
