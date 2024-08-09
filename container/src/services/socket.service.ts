@@ -44,10 +44,14 @@ export class SocketService {
       console.log("🔗 New client connected ", socket.id);
 
       this.bash.onData((data) => {
-        socket.emit("terminal:write", data);
+        console.log(data);
+
+        socket.emit("terminal:written", data);
       });
 
       socket.on("terminal:write", (data) => {
+        console.log("Terminal data recv ", data);
+
         this.bash.write(data + "\n");
       });
 
@@ -63,6 +67,7 @@ export class SocketService {
       });
 
       socket.on("disconnect", () => {
+        socket.disconnect();
         console.log("🔌 Client disconnected");
       });
     });

@@ -19,12 +19,25 @@ export default class SocketGateway
   @WebSocketServer() server: Server;
   private client_socket: SocketToContainerService;
 
+  constructor() {
+    this.client_socket?.socket?.on('terminal:written', (data) => {
+      console.log(data);
+
+      this.server.emit('terminal:written', data);
+    });
+  }
+
   handleConnection(client: Socket) {
     console.log('New client connected', client.id);
   }
 
   handleDisconnect(client: Socket) {
     console.log('New client connected', client.id);
+  }
+
+  @SubscribeMessage('terminal:write')
+  async write_to_terminal(_: Socket, cmd: string) {
+    this.client_socket.socket.emit('terminal:write', cmd);
   }
 
   @SubscribeMessage('list:filesystem')

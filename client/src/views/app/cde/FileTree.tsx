@@ -2,12 +2,14 @@ import { FileTreeAtom } from "@/core/store/atoms/file_tree.atom";
 import { DirectoryStructure } from "@/core/types/cde.types";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
+import "@/styles/ScrollBarFileTree.css";
 
 const FileTree = () => {
   const fileTree = useRecoilValue(FileTreeAtom);
 
   return (
-    <div className="h-full w-full bg-[#0F0F0F]  pr-2">
+    <div className="h-full w-full bg-[#0F0F0F]  pr-2 overflow-y-scroll file_tree_scroll">
+      <RenderTree tree={fileTree} />
       <RenderTree tree={fileTree} />
     </div>
   );
@@ -37,7 +39,7 @@ const TreeNode = ({
   return (
     <div className="w-full" style={{ paddingLeft: level * 20 }}>
       <div
-        className="cursor-pointer mb-1 hover:bg-white/5 pl-4 py-1 rounded-sm"
+        className=" text-sm cursor-pointer mb-1 hover:bg-white/5 pl-4 py-1 rounded-sm"
         onClick={() => {
           if (node.type === "directory") return;
           const params = new URLSearchParams({ path: node.path });

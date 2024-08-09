@@ -14,6 +14,9 @@ import FileTree from "./FileTree";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { FILE_ATOM } from "@/core/store/atoms/file.atom";
 import CodeEditor from "./CodeEditor";
+import Footer from "./Footer";
+import Headers from "./Headers";
+import Terminal from "./Terminal";
 
 const Editor = () => {
   const socketRef = useRef<Socket | null>(null);
@@ -80,7 +83,7 @@ const Editor = () => {
   return (
     <div className="h-full w-full flex flex-col justify-center items-center">
       <div className="h-[3.5%] w-full bg-primary-black border-b border-gray-500/60">
-        {params.get("path")}
+        <Headers />
       </div>
       <div className=" h-[93%] w-full">
         <ResizablePanelGroup direction="horizontal">
@@ -95,17 +98,22 @@ const Editor = () => {
               </ResizablePanel>
               <ResizableHandle className="bg-blue-500" />
               <ResizablePanel defaultSize={30} className="bg-primary-black">
-                Terminal
+                <Terminal socketRef={socketRef} />
               </ResizablePanel>
             </ResizablePanelGroup>
           </ResizablePanel>
           <ResizableHandle className="bg-gray-500" />
           <ResizablePanel defaultSize={30}>
-            <iframe src="http://localhost:2450/auth/signin" className="h-full w-full" />
+            <iframe
+              src="http://localhost:2450/auth/signin"
+              className="h-full w-full"
+            />
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>
-      <div className="h-[3.5%] w-full bg-primary-black border-t border-gray-500/60"></div>
+      <div className="h-[3.5%] w-full bg-primary-black border-t border-gray-500/60">
+        <Footer />
+      </div>
     </div>
   );
 };
