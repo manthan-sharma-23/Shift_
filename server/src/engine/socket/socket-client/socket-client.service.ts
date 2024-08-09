@@ -5,8 +5,7 @@ export default class SocketToContainerService {
   public socket: Socket;
   cube: Cube;
 
-  constructor(port: number, cube: Cube) {
-    console.log('creating socket connection with ', cube.id);
+  constructor(port: number, cube?: Cube) {
     try {
       this.socket = io(`http://localhost:${port}`);
       this.cube = cube;
@@ -15,7 +14,29 @@ export default class SocketToContainerService {
     }
   }
 
-  get_file_system_from_container() {
-    this.socket.emit('get:filesystem');
+  async get_file_system_from_container() {
+    const dirStruct = (await this.sendRequest('get:filesystem')) as any;
+    return dirStruct;
+  }
+
+  async get_file_content(path: string) {
+    const content = await this.sendRequest('get:file', path);
+    return content;
+  }
+
+  private sendRequest(type: string, data: any = null) {
+    return new Promise((resolve, reject) => {
+      if (!this.socket) {
+        alert('No socket state active');
+        return;
+      }
+      this.socket.emit(type, data, (response: any, err: any) => {
+        if (!err) {
+          resolve(response);
+        } else {
+          reject(err);
+        }
+      });
+    });
   }
 }

@@ -75,6 +75,6 @@ export const configurations = {
   },
   fs: {
     root: path.join(__dirname + "/../"),
-    project: path.join(__dirname + "/../project"),
+    project: path.join(__dirname + "/../project/"),
   },
 };

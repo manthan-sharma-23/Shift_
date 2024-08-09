@@ -3,8 +3,14 @@ import * as Io from "socket.io";
 import * as pty from "node-pty";
 import { config } from "dotenv";
 import { configurations } from "../config";
+import { getDirStructure } from "../controllers/dir";
+import { promises as fs } from "fs";
 
 config();
+
+interface SocketCallback {
+  (response: any): void;
+}
 
 export class SocketService {
   private io: Io.Server;
@@ -29,28 +35,36 @@ export class SocketService {
     try {
       this.listenToEvents(this.io);
     } catch (error) {
-      console.error("Error initializing socket events:", error);
+      console.error("Error in socket events:", error);
     }
   }
 
   private listenToEvents(io: Io.Server) {
-    this.bash.onData((data) => {
-      this.io.emit("terminal:write", data);
-    });
     io.on("connection", (socket) => {
-      console.log("🔗 New client connected");
+      console.log("🔗 New client connected ", socket.id);
+
+      this.bash.onData((data) => {
+        socket.emit("terminal:write", data);
+      });
 
       socket.on("terminal:write", (data) => {
         this.bash.write(data + "\n");
+      });
+
+      socket.on("get:filesystem", async (_, cb: SocketCallback) => {
+        const struct = await getDirStructure();
+        cb(struct);
+      });
+
+      socket.on("get:file", async (path, cb: SocketCallback) => {
+        const fullPath = configurations.fs.project + path;
+        const data = await fs.readFile(fullPath, "utf-8");
+        cb(data);
       });
 
       socket.on("disconnect", () => {
         console.log("🔌 Client disconnected");
       });
     });
-  }
-
-  private async getDirStructure() {
-    
   }
 }

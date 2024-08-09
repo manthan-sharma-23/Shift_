@@ -88,7 +88,8 @@ module.exports = {
         primary: {
           DEFAULT: "#111111",
           dark: "#0F0F0F",
-          light: "#121113"
+          light: "#121113",
+          black: "#0F0F0F"
         },
         editor: {
           DEFAULT: "#1E1E1E"
