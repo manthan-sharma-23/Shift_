@@ -10,9 +10,12 @@ const Footer = () => {
     <div className="flex items-center justify-start px-5 h-full w-full text-gray-400">
       <div className=" text-[.9rem] font-poppins flex items-center justify-start gap-1">
         <p>{">>"}</p>
-        {file && file.map((name) => (
-          <p className="h-full flex items-center ">{name} {">"}</p>
-        ))}
+        {file &&
+          file.map((name, index) => (
+            <p className="h-full flex items-center " key={index}>
+              {name} {">"}
+            </p>
+          ))}
       </div>
     </div>
   );

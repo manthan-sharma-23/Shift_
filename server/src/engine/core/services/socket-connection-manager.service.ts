@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Cube } from '@prisma/client';
-import SocketToContainerService from './socket-client.service';
 
 export interface ContainerSocket {
   cube: Partial<Cube>;
-  socket: SocketToContainerService;
 }
 
 @Injectable()
@@ -65,15 +63,11 @@ export default class SocketConnectionManagerService {
     other_port: number;
     cube: Cube;
   }) {
-    const socketService = new SocketToContainerService(express_port, cube);
-
     this.express_available_ports.set(express_port, {
-      socket: socketService,
       cube,
     });
 
     this.project_available_ports.set(other_port, {
-      socket: socketService,
       cube,
     });
 

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Cube } from '@prisma/client';
 import { exec } from 'child_process';
-import SocketConnectionManagerService from 'src/engine/socket/socket-client/socket-connection-manager.service';
 import { configurations } from 'src/lib/config';
+import SocketConnectionManagerService from './socket-connection-manager.service';
 
 @Injectable()
 export class ContainerService {

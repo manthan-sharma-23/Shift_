@@ -3,12 +3,11 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { configuration } from "@/core/config/config";
 import { FileTreeAtom } from "@/core/store/atoms/file_tree.atom";
 import { DirectoryStructure } from "@/core/types/cde.types";
 
 import { useEffect, useRef } from "react";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { Socket, io } from "socket.io-client";
 import FileTree from "./FileTree";
 import { useLocation, useSearchParams } from "react-router-dom";
@@ -16,14 +15,12 @@ import { FILE_ATOM } from "@/core/store/atoms/file.atom";
 import CodeEditor from "./CodeEditor";
 import Footer from "./Footer";
 import Headers from "./Headers";
-import Terminal from "./Terminal";
 
 const Editor = () => {
   const socketRef = useRef<Socket | null>(null);
   const { pathname } = useLocation();
   const [params] = useSearchParams();
-  const [fileTree, setFileTree] =
-    useRecoilState<DirectoryStructure[]>(FileTreeAtom);
+  const setFileTree = useSetRecoilState<DirectoryStructure[]>(FileTreeAtom);
   const setFile = useSetRecoilState(FILE_ATOM);
 
   useEffect(() => {
@@ -31,7 +28,7 @@ const Editor = () => {
 
     async function getfile() {
       const path = params.get("path");
-      const res = (await sendRequest("get:file:path", path)) as string;
+      const res = (await sendRequest("get:file", path!)) as string;
       setFile(res);
     }
     if (socketRef.current) {
@@ -42,18 +39,15 @@ const Editor = () => {
   }, [params, pathname]);
 
   useEffect(() => {
-    const socket = io(configuration.server.http_url);
+    const socket = io("http://localhost:3300");
 
     socket.on("connect", async () => {
-      console.log("Socket connected to Proxy Server");
+      console.log("Connected to Container");
 
       socketRef.current = socket;
 
-      socketRef.current.emit("list:filesystem");
-
-      const message = (await sendRequest(
-        "list:filesystem"
-      )) as DirectoryStructure[];
+      const message = (await sendRequest("get:fs")) as DirectoryStructure[];
+      console.log("Message", message);
 
       setFileTree(message);
     });
@@ -64,13 +58,13 @@ const Editor = () => {
     };
   }, []);
 
-  function sendRequest(type: string, data: any = null) {
+  function sendRequest(type: string, data: unknown = {}) {
     return new Promise((resolve, reject) => {
       if (!socketRef.current) {
         alert("No socket state active");
         return;
       }
-      socketRef.current.emit(type, data, (response: any, err: any) => {
+      socketRef.current.emit(type, data, (response: unknown, err: unknown) => {
         if (!err) {
           resolve(response);
         } else {
@@ -98,7 +92,7 @@ const Editor = () => {
               </ResizablePanel>
               <ResizableHandle className="bg-blue-500" />
               <ResizablePanel defaultSize={30} className="bg-primary-black">
-                <Terminal socketRef={socketRef} />
+                {/* <Terminal socketRef={socketRef} /> */}
               </ResizablePanel>
             </ResizablePanelGroup>
           </ResizablePanel>

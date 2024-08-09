@@ -55,8 +55,11 @@ export class SocketService {
         this.bash.write(data + "\n");
       });
 
-      socket.on("get:filesystem", async (_, cb: SocketCallback) => {
+      socket.on("get:fs", async (data: any, cb: SocketCallback) => {
+        console.log("Get file system", data);
+
         const struct = await getDirStructure();
+        // return struct;
         cb(struct);
       });
 

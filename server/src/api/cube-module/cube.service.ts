@@ -3,7 +3,7 @@ import DatabaseService from 'src/engine/database/Database.service';
 import { Request } from 'express';
 import { ProjectCreationInput } from 'src/engine/types/validators/projects.validator';
 import { ContainerService } from 'src/engine/core/services/Container.service';
-import SocketConnectionManagerService from 'src/engine/socket/socket-client/socket-connection-manager.service';
+import SocketConnectionManagerService from 'src/engine/core/services/socket-connection-manager.service';
 
 @Injectable()
 export default class CubeService {
@@ -37,7 +37,6 @@ export default class CubeService {
         cube: cube_modal,
       });
 
-      
       return res;
     } catch (error) {
       console.log(error);
