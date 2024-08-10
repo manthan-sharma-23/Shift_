@@ -14,3 +14,10 @@ export type CreateCubeInput = {
   name: string;
   type: string;
 };
+
+export interface Ports {
+  ports: {
+    express_port: number;
+    other_port: number;
+  };
+}

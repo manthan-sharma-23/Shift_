@@ -16,10 +16,13 @@ import CodeEditor from "./CodeEditor";
 import Footer from "./Footer";
 import Headers from "./Headers";
 import "@xterm/xterm/css/xterm.css";
+import { Ports } from "@/core/types/cube.types";
 
 const Editor = () => {
   const socketRef = useRef<Socket | null>(null);
   const terminalRef = useRef<HTMLDivElement | null>(null);
+  const ports_str = window.localStorage.getItem("ports");
+  const ports = JSON.parse(ports_str!) as Ports;
 
   const { pathname } = useLocation();
   const [params] = useSearchParams();
@@ -28,8 +31,6 @@ const Editor = () => {
   const setFile = useSetRecoilState(FILE_ATOM);
 
   useEffect(() => {
-    console.log("Use effect triggered");
-
     async function getfile() {
       const path = params.get("path");
       const res = (await sendRequest("get:file", path!)) as string;
@@ -43,7 +44,7 @@ const Editor = () => {
   }, [params, pathname]);
 
   useEffect(() => {
-    const socket = io("http://localhost:3300");
+    const socket = io(`http://localhost:${ports.ports.express_port}`);
 
     socket.on("connect", async () => {
       console.log("Connected to Container");
@@ -98,6 +99,10 @@ const Editor = () => {
     });
   }
 
+  if (!ports_str) {
+    return <div className="h-full w-full">Return no ports active</div>;
+  }
+
   return (
     <div className="h-full w-full flex flex-col justify-center items-center">
       <div className="h-[3.5%] w-full bg-primary-black border-b border-gray-500/60">
@@ -127,7 +132,7 @@ const Editor = () => {
           <ResizableHandle className="bg-gray-500" />
           <ResizablePanel defaultSize={30}>
             <iframe
-              src="http://localhost:2450/auth/signin"
+              src={`http://localhost:${ports.ports.other_port}`}
               className="h-full w-full"
             />
           </ResizablePanel>

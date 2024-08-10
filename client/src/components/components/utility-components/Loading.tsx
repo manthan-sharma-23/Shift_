@@ -6,8 +6,7 @@ const Loading = () => {
     <div className="h-full w-full flex flex-col justify-center items-center text-white/70">
       <div className="relative flex flex-col items-center">
         <BiSolidCube className="bounce" style={{ fontSize: "2rem" }} />
-         </div>
-      <div>loading ...</div>
+      </div>
     </div>
   );
 };

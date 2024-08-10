@@ -1,7 +1,7 @@
 import { configuration } from "../config/config";
 import axios from "axios";
 import { AuthenticateUser, LoggedUser, User } from "../types/user.types";
-import { CreateCubeInput, Cube } from "../types/cube.types";
+import { CreateCubeInput, Cube, Ports } from "../types/cube.types";
 
 export default class Server {
   private server_url: string;
@@ -80,6 +80,18 @@ export default class Server {
     return data;
   };
 
+  private run_cube = async (input: { cubeId: string }) => {
+    const data = (
+      await axios.put(this.server_url + "/v1/cube/run-cube", input, {
+        headers: {
+          Authorization: this.token,
+        },
+      })
+    ).data as Ports;
+
+    return data;
+  };
+
   get user() {
     return {
       get_user: this.get_user,
@@ -92,6 +104,7 @@ export default class Server {
     return {
       get_user_cubes: this.get_user_cubes,
       create_user_cube: this.create_user_cube,
+      run_cube: this.run_cube,
     };
   }
 }

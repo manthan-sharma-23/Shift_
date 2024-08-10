@@ -2,6 +2,9 @@ import { Button } from "@/components/ui/button";
 import { IoAdd } from "react-icons/io5";
 import { PiCubeFill } from "react-icons/pi";
 import ProjectsList from "./ProjectsList";
+import CreateCube from "@/components/components/app/CreateCube";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Toaster } from "sonner";
 
 const Projects = () => {
   return (
@@ -14,10 +17,17 @@ const Projects = () => {
           Recent
         </p>
         <div className="w-auto h-full flex gap-3 items-center justify-center">
-          <Button className="gap-2 bg-white text-black hover:bg-white/80">
-            <IoAdd className="text-lg" />
-            <p>Create Cube</p>
-          </Button>
+          <Sheet>
+            <SheetTrigger>
+              <Button className="gap-2 bg-white text-black hover:bg-white/80">
+                <IoAdd className="text-lg" />
+                <p>Create Cube</p>
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="bg-black border-0 text-white p-0 m-0">
+              <CreateCube />
+            </SheetContent>
+          </Sheet>
           <Button className="gap-2  bg-white text-black hover:bg-white/80">
             <PiCubeFill />
             <p>Explore Cubes</p>
@@ -27,6 +37,7 @@ const Projects = () => {
       <div className="w-full h-auto flex flex-wrap">
         <ProjectsList />
       </div>
+      <Toaster />
     </div>
   );
 };
