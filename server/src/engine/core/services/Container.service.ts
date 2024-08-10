@@ -30,7 +30,8 @@ export class ContainerService {
       cube,
     });
 
-    await this.docker.createContainer(container_options);
+    const container = await this.docker.createContainer(container_options);
+    await container.start();
 
     return { port1, port2 };
   }
