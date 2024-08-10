@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Req, UseGuards } from '@nestjs/common';
 import CubeService from './cube.service';
 import { Request } from 'express';
 import AuthenticateJWTToken from 'src/engine/core/guards/Authentication.guard';
@@ -17,5 +17,11 @@ export default class CubeController {
   @UseGuards(AuthenticateJWTToken)
   async get_user_cubes(@Req() req: Request) {
     return await this.cubeService.get_user_cubes(req);
+  }
+
+  @Put('/run-cube')
+  @UseGuards(AuthenticateJWTToken)
+  async run_container(@Req() req: Request) {
+    return await this.cubeService.run_cube(req);
   }
 }

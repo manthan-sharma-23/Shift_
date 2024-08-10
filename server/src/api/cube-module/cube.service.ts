@@ -1,7 +1,10 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import DatabaseService from 'src/engine/database/Database.service';
 import { Request } from 'express';
-import { ProjectCreationInput } from 'src/engine/types/validators/projects.validator';
+import {
+  ProjectCreationInput,
+  RunCubeInput,
+} from 'src/engine/types/validators/projects.validator';
 import { ContainerService } from 'src/engine/core/services/Container.service';
 import SocketConnectionManagerService from 'src/engine/core/services/socket-connection-manager.service';
 
@@ -26,18 +29,9 @@ export default class CubeService {
         },
       });
 
-      const { port1, port2 } =
-        await this.containerService.run_containers(cube_modal);
+      await this.containerService.create_container(cube_modal);
 
-      const res = await this.delay(10 * 1000, cube_modal);
-
-      this.socketConnectionManagerService.create_socket_connection({
-        express_port: port1,
-        other_port: port2,
-        cube: cube_modal,
-      });
-
-      return res;
+      return cube_modal;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error);
@@ -54,6 +48,14 @@ export default class CubeService {
     });
 
     return cubes;
+  }
+
+  async run_cube(req: Request) {
+    const { cubeId } = RunCubeInput.parse(req.body);
+
+    const { ports } = await this.containerService.run_container(cubeId);
+
+    return { ports };
   }
 
   delay<T>(ms: number, result: T): Promise<T> {
