@@ -9,7 +9,7 @@ export interface ContainerSocket {
 export default class SocketConnectionManagerService {
   express_available_ports: Map<number, ContainerSocket>;
   project_available_ports: Map<number, ContainerSocket>;
-  express_cubeId_map: Map<number, string>;
+  express_cubeId_map: Map<string, { express: number; other?: number }>;
   port = {
     express: {
       min: 3000,
@@ -60,7 +60,7 @@ export default class SocketConnectionManagerService {
     cube,
   }: {
     express_port: number;
-    other_port: number;
+    other_port?: number;
     cube: Cube;
   }) {
     this.express_available_ports.set(express_port, {
@@ -71,6 +71,9 @@ export default class SocketConnectionManagerService {
       cube,
     });
 
-    this.express_cubeId_map.set(express_port, cube.id);
+    this.express_cubeId_map.set(cube.id, {
+      express: express_port,
+      other: other_port,
+    });
   }
 }

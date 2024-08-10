@@ -55,6 +55,10 @@ const Editor = () => {
 
       setFileTree(message);
 
+      socket.on("file:tree", (tree) => {
+        setFileTree(tree);
+      });
+
       //Terminal
 
       if (terminalRef.current) {
@@ -123,7 +127,7 @@ const Editor = () => {
           <ResizableHandle className="bg-gray-500" />
           <ResizablePanel defaultSize={30}>
             <iframe
-              src="http://localhost:3600"
+              src="http://localhost:2450/auth/signin"
               className="h-full w-full"
             />
           </ResizablePanel>

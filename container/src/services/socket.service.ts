@@ -73,10 +73,39 @@ export class SocketService {
         await fs.writeFile(fullPath, file);
       });
 
+      socket.on("create:file", async (data) => {
+        const { path, name } = data;
+        const fullPath = configurations.fs.project + path + "/" + name;
+        console.log(fullPath);
+
+        await fs.writeFile(fullPath, "");
+        this.sendFileTree(socket);
+      });
+
+      socket.on("create:dir", async ({ name, path }) => {
+        const fullPath = configurations.fs.project + path + "/" + name;
+        await fs.mkdir(fullPath);
+        this.sendFileTree(socket);
+      });
+
+      socket.on("delete:file", async ({ path }) => {
+        const fullPath = configurations.fs.project + path;
+        try {
+          await fs.rm(fullPath, { recursive: true, force: true });
+        } catch (err) {
+          console.error(`Failed to delete ${fullPath}:`, err);
+        }
+        this.sendFileTree(socket);
+      });
+
       socket.on("disconnect", () => {
         socket.disconnect();
         console.log("🔌 Client disconnected");
       });
     });
+  }
+  private async sendFileTree(socket: Io.Socket) {
+    const tree = await getDirStructure();
+    socket.emit("file:tree", tree);
   }
 }
