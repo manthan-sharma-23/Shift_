@@ -3,7 +3,6 @@ import { RecoilRoot } from "recoil";
 import AuthLayout from "./components/layouts/AuthLayout";
 import Signin from "./views/auth/Signin";
 import Signup from "./views/auth/Signup";
-import { Toaster } from "@/components/ui/sonner";
 import RootLayout from "./components/layouts/RootLayout";
 import Home from "./views/app/Home";
 import Projects from "./views/app/Projects/Projects";
@@ -29,7 +28,6 @@ const App = () => {
                 <Route path="/app/project/:projectId" element={<Editor />} />
               </Route>
             </Routes>
-            <Toaster />
           </BrowserRouter>
         </RecoilRoot>
       </QueryClientProvider>

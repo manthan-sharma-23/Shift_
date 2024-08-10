@@ -1,4 +1,3 @@
-import React from "react";
 import { useSearchParams } from "react-router-dom";
 
 const Footer = () => {
@@ -7,8 +6,8 @@ const Footer = () => {
 
   const file = path.get("path")?.split("/");
   return (
-    <div className="flex items-center justify-start px-5 h-full w-full text-gray-400">
-      <div className=" text-[.9rem] font-poppins flex items-center justify-start gap-1">
+    <div className="flex items-center justify-start px-3 h-full w-full text-gray-400">
+      <div className=" text-[.8rem] font-poppins flex items-center justify-start gap-1 text-blue-400">
         <p>{">>"}</p>
         {file &&
           file.map((name, index) => (

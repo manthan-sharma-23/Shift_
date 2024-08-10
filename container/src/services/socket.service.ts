@@ -52,14 +52,13 @@ export class SocketService {
       socket.on("terminal:write", (data) => {
         console.log("Terminal data recv ", data);
 
-        this.bash.write(data + "\n");
+        this.bash.write(data);
       });
 
       socket.on("get:fs", async (data: any, cb: SocketCallback) => {
         console.log("Get file system", data);
 
         const struct = await getDirStructure();
-        // return struct;
         cb(struct);
       });
 
@@ -67,6 +66,11 @@ export class SocketService {
         const fullPath = configurations.fs.project + path;
         const data = await fs.readFile(fullPath, "utf-8");
         cb(data);
+      });
+
+      socket.on("change:file:content", async ({ path, file }) => {
+        const fullPath = configurations.fs.project + path;
+        await fs.writeFile(fullPath, file);
       });
 
       socket.on("disconnect", () => {

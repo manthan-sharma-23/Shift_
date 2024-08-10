@@ -1,5 +1,6 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import logo from "/icon.svg";
+import { Toaster } from "sonner";
 
 const MyComponent = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const MyComponent = () => {
         <img src={logo} className=" h-[75%]" />
       </div>
       <Outlet />
+      <Toaster position="bottom-right" />
     </div>
   );
 };

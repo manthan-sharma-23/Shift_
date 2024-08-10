@@ -5,7 +5,7 @@ import {
 } from "@/components/ui/resizable";
 import { FileTreeAtom } from "@/core/store/atoms/file_tree.atom";
 import { DirectoryStructure } from "@/core/types/cde.types";
-
+import { Terminal as XTerminal } from "@xterm/xterm";
 import { useEffect, useRef } from "react";
 import { useSetRecoilState } from "recoil";
 import { Socket, io } from "socket.io-client";
@@ -15,11 +15,15 @@ import { FILE_ATOM } from "@/core/store/atoms/file.atom";
 import CodeEditor from "./CodeEditor";
 import Footer from "./Footer";
 import Headers from "./Headers";
+import "@xterm/xterm/css/xterm.css";
 
 const Editor = () => {
   const socketRef = useRef<Socket | null>(null);
+  const terminalRef = useRef<HTMLDivElement | null>(null);
+
   const { pathname } = useLocation();
   const [params] = useSearchParams();
+
   const setFileTree = useSetRecoilState<DirectoryStructure[]>(FileTreeAtom);
   const setFile = useSetRecoilState(FILE_ATOM);
 
@@ -50,6 +54,22 @@ const Editor = () => {
       console.log("Message", message);
 
       setFileTree(message);
+
+      //Terminal
+
+      if (terminalRef.current) {
+        const term = new XTerminal({ rows: 20 });
+
+        term.open(terminalRef.current);
+
+        term.onData((data) => {
+          socket.emit("terminal:write", data);
+        });
+
+        socket.on("terminal:written", (data) => {
+          term.write(data);
+        });
+      }
     });
 
     return () => {
@@ -88,18 +108,22 @@ const Editor = () => {
           <ResizablePanel defaultSize={55} minSize={45}>
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={70}>
-                <CodeEditor />
+                {socketRef.current && <CodeEditor socket={socketRef.current} />}
               </ResizablePanel>
               <ResizableHandle className="bg-blue-500" />
-              <ResizablePanel defaultSize={30} className="bg-primary-black">
-                {/* <Terminal socketRef={socketRef} /> */}
+              <ResizablePanel
+                defaultSize={30}
+                className="bg-primary-black mb-1"
+              >
+                {/* Terminal */}
+                <div ref={terminalRef} className="overflow-y-scroll p-0 m-0" />
               </ResizablePanel>
             </ResizablePanelGroup>
           </ResizablePanel>
           <ResizableHandle className="bg-gray-500" />
           <ResizablePanel defaultSize={30}>
             <iframe
-              src="http://localhost:2450/auth/signin"
+              src="http://localhost:3600"
               className="h-full w-full"
             />
           </ResizablePanel>
