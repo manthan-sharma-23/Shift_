@@ -58,7 +58,7 @@ export class ContainerService {
       cube: cube,
     });
 
-    return { port1, port2 };
+    return { port1, port2, container: _container };
   }
 
   async burnContainers(cubeId: string, userId: string) {
@@ -141,6 +141,22 @@ export class ContainerService {
     });
 
     return { info, ports };
+  }
+
+  async reinit_container(cube: Cube) {
+    try {
+      const containerName = this.getContainerName(cube.id);
+      const { port1, container } = await this.create_container(cube);
+      const files = await this.s3Service.fetchFiles(cube.userId, cube.id);
+      await container.start();
+      await this.delay(120 * 1000);
+      await axios.put(`http://${containerName}:${port1}/reinit`, { files });
+      await this.delay(20 * 100);
+      return { OK: 'OK' };
+    } catch (error) {
+      console.log(error);
+      throw new GoneException(error);
+    }
   }
 
   async get_network() {

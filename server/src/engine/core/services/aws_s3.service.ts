@@ -54,7 +54,73 @@ export default class S3Service {
     }
   }
 
-  getPath(userId: string, cubeId: string, path: string) {
+  async fetchFiles(userId: string, cubeId: string) {
+    const path = this.getPath(userId, cubeId);
+    let continuationToken: string | undefined;
+    const allFiles: string[] = [];
+
+    try {
+      do {
+        const command = new s3.ListObjectsV2Command({
+          Bucket: this.bucket_name,
+          Prefix: path,
+          ContinuationToken: continuationToken,
+        });
+        const response = await this.s3_client.send(command);
+
+        if (response.Contents) {
+          response.Contents.forEach((object) => {
+            if (object.Key) {
+              allFiles.push(object.Key);
+            }
+          });
+        }
+
+        continuationToken = response.NextContinuationToken;
+      } while (continuationToken);
+
+      const files: FileObject[] = [];
+      await Promise.all(
+        allFiles.map(async (key) => {
+          const file = await this.getFileContent(key);
+          const content = await file.transformToString();
+          const actual_path = this.getRelativePathFromKey(key, path);
+          files.push({
+            path: actual_path,
+            content: content,
+          });
+        }),
+      );
+
+      return files;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  }
+
+  async getFileContent(key: string) {
+    try {
+      const command = new s3.GetObjectCommand({
+        Bucket: this.bucket_name,
+        Key: key,
+      });
+
+      const response = await this.s3_client.send(command);
+
+      return response.Body;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+
+  getRelativePathFromKey(key: string, path: string) {
+    const trimmed = key.replace(path, '');
+    return trimmed;
+  }
+
+  getPath(userId: string, cubeId: string, path: string = '') {
     return this.base_path + '/' + userId + '/' + cubeId + '/' + path;
   }
 }

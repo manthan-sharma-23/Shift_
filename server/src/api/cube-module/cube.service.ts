@@ -66,15 +66,26 @@ export default class CubeService {
   }
 
   async burn_containers(cubeId: string, req: Request) {
-    console.log(this.socketConnectionManagerService.express_available_ports);
-    console.log(this.socketConnectionManagerService.express_cubeId_map);
-
     const r = await this.containerService.burnContainers(
       cubeId,
       req.user.userId,
     );
 
     return r;
+  }
+
+  async reinit_container(cubeId: string) {
+    try {
+      const cube = await this.databaseService.cube.findUniqueOrThrow({
+        where: {
+          id: cubeId,
+        },
+      });
+      const res = await this.containerService.reinit_container(cube);
+      return res;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   delay<T>(ms: number, result: T): Promise<T> {

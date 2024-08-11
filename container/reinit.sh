@@ -7,6 +7,7 @@ if [ -z "$1" ]; then
 fi
 
 PROJECT_NAME=$1
+PORT=$2
 
 # Change to the project directory
 cd "project/$PROJECT_NAME" || {
@@ -19,6 +20,8 @@ npm install || {
     echo "npm install failed"
     exit 1
 }
+
+npm pkg set scripts.dev="PORT=$PORT npm run start"
 
 # Run the development server
 npm run dev || {

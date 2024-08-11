@@ -28,6 +28,7 @@ router.get("/project", async (_, res) => {
 
 router.put("/reinit", async (req, res) => {
   const files = req.body.files as FileObject[];
+
   const projectName = configurations.env.project.projectName;
   const path_to_project = path.join(configurations.fs.project, projectName);
   try {
@@ -51,7 +52,9 @@ router.put("/reinit", async (req, res) => {
     );
     const path_to_script = path.join(configurations.fs.root, "reinit.sh");
 
-    await execPromise(`bash ${path_to_script} ${projectName}`);
+    await execPromise(
+      `bash ${path_to_script} ${projectName} ${process.env.PORT2}`
+    );
     res.status(200).json({
       message: `Project reinitialized successfully , ${files.length} files updated`,
     });

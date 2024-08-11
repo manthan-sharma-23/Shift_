@@ -42,4 +42,10 @@ export default class CubeController {
   ) {
     return await this.cubeService.burn_containers(cubeId, req);
   }
+
+  @Put('/reinit/:cubeId')
+  @UseGuards(AuthenticateJWTToken)
+  async reinit_container(@Param() { cubeId }: { cubeId: string }) {
+    return await this.cubeService.reinit_container(cubeId);
+  }
 }
