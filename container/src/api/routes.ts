@@ -43,43 +43,6 @@ router.put("/reinit", async (req, res) => {
   console.log(files.length);
 
   try {
-    await new Promise<void>((resolve, reject) => {
-      const lsofProcess = spawn("lsof", ["-t", `-i:${PORT2}`]);
-      let output = "";
-
-      lsofProcess.stdout.on("data", (data) => {
-        output += data.toString();
-      });
-
-      lsofProcess.stderr.on("data", (data) => {
-        console.error(`lsof error: ${data}`);
-      });
-
-      lsofProcess.on("close", (code) => {
-        if (code === 0) {
-          if (output) {
-            const killProcess = spawn("xargs", ["kill", "-9"]);
-            killProcess.stdin.write(output);
-            killProcess.stdin.end();
-
-            killProcess.on("close", (killCode) => {
-              if (killCode === 0) {
-                resolve();
-              } else {
-                reject(new Error(`kill process exited with code ${killCode}`));
-              }
-            });
-          } else {
-            resolve();
-          }
-        } else {
-          reject(new Error(`lsof process exited with code ${code}`));
-        }
-      });
-    });
-
-    console.log("PROCESS KILLED");
-
     await fs.promises.rm(path_to_project, { recursive: true, force: true });
 
     await Promise.all(

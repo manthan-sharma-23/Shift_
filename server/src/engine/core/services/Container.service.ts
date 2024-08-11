@@ -30,7 +30,7 @@ export class ContainerService {
 
   private image = configurations.container.user_container_image;
 
-  async create_container(cube: Cube) {
+  async create_container(cube: Cube, REINIT: 0 | 1 = 0) {
     const container_name = this.getContainerName(cube.id);
 
     const port1 = await this.socketConnectionManagerService.find_express_port();
@@ -42,6 +42,7 @@ export class ContainerService {
       port1,
       port2,
       cube,
+      REINIT,
     });
 
     const _container = await this.docker.createContainer(container_options);
@@ -145,13 +146,13 @@ export class ContainerService {
 
   async reinit_container(cube: Cube) {
     try {
-      // const containerName = this.getContainerName(cube.id);
-      // const { port1, container } = await this.create_container(cube);
+      const containerName = this.getContainerName(cube.id);
+      const { port1, container } = await this.create_container(cube, 1);
       const files = await this.s3Service.fetchFiles(cube.userId, cube.id);
-      // await container.start();
-      // await this.delay(120 * 1000);
-      await axios.put(`http://host.docker.internal:3300/reinit`, { files });
-      await this.delay(20 * 100);
+      await container.start();
+      await this.delay(7 * 1000);
+      await axios.put(`http://${containerName}:${port1}/reinit`, { files });
+      await this.delay(50 * 100);
       return { OK: 'OK' };
     } catch (error) {
       console.log(error);
@@ -192,11 +193,13 @@ export class ContainerService {
     port1,
     port2,
     cube,
+    REINIT = 0,
   }: {
     image: string;
     containerName: string;
     port1: number;
     port2: number;
+    REINIT?: 0 | 1;
     cube: Cube;
   }) {
     const options: Docker.ContainerCreateOptions = {
@@ -210,6 +213,7 @@ export class ContainerService {
         `${cube.name}`,
         `${cube.type}`,
         `${cube.id}`,
+        `${REINIT}`,
         '--y',
       ],
       ExposedPorts: {
