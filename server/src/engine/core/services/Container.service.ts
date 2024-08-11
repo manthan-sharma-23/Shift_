@@ -145,12 +145,12 @@ export class ContainerService {
 
   async reinit_container(cube: Cube) {
     try {
-      const containerName = this.getContainerName(cube.id);
-      const { port1, container } = await this.create_container(cube);
+      // const containerName = this.getContainerName(cube.id);
+      // const { port1, container } = await this.create_container(cube);
       const files = await this.s3Service.fetchFiles(cube.userId, cube.id);
-      await container.start();
-      await this.delay(120 * 1000);
-      await axios.put(`http://${containerName}:${port1}/reinit`, { files });
+      // await container.start();
+      // await this.delay(120 * 1000);
+      await axios.put(`http://host.docker.internal:3300/reinit`, { files });
       await this.delay(20 * 100);
       return { OK: 'OK' };
     } catch (error) {

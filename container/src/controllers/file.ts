@@ -18,7 +18,7 @@ export const readFilesRecursively = async (
     const fullPath = path.join(dir, item.name);
 
     if (item.isDirectory()) {
-      if (item.name !== "node_modules") {
+      if (item.name !== "node_modules" && item.name !== "package-lock.json") {
         const nestedFiles = await readFilesRecursively(fullPath, baseDir);
         files = files.concat(nestedFiles);
       }

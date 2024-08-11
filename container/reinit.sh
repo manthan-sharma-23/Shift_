@@ -1,10 +1,14 @@
 #!/bin/bash
 
+set -x
+
 # Check if the PROJECT_NAME argument is provided
 if [ -z "$1" ]; then
     echo "Error: PROJECT_NAME argument is required"
     exit 1
 fi
+
+echo pwd
 
 PROJECT_NAME=$1
 PORT=$2
