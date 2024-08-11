@@ -54,6 +54,13 @@ export default class SocketConnectionManagerService {
     return null;
   }
 
+  remove_socket(cubeId: string) {
+    const ports = this.express_cubeId_map.get(cubeId);
+    this.express_cubeId_map.delete(cubeId);
+    this.express_available_ports.delete(ports.express);
+    this.project_available_ports.delete(ports.other);
+  }
+
   public getCubePort(id: string) {
     return this.express_cubeId_map.get(id);
   }

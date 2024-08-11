@@ -22,5 +22,7 @@ echo "Installing dependencies..."
 npm install &
 
 # Run the React app on the specified port
+npm pkg set scripts.dev="PORT=$PORT npm run start"
+
 echo "Running React Scripts ..."
-PORT=$PORT npm start
+npm run dev

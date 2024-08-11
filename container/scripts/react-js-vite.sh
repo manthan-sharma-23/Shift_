@@ -19,6 +19,7 @@ npx create-react-app ./ -y
 echo "Installing dependencies..."
 npm install &
 # npm install (This line is optional because create-react-app already installs dependencies)
+npm pkg set scripts.dev="PORT=$PORT npm run start"
 
 echo "Running React Scripts ..."
-PORT=$PORT npm run start
+npm run dev

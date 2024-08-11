@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-interface FileContent {
+export interface FileObject {
   path: string;
   content: string;
 }
@@ -9,8 +9,8 @@ interface FileContent {
 export const readFilesRecursively = async (
   dir: string,
   baseDir: string
-): Promise<FileContent[]> => {
-  let files: FileContent[] = [];
+): Promise<FileObject[]> => {
+  let files: FileObject[] = [];
 
   const items = await fs.promises.readdir(dir, { withFileTypes: true });
 

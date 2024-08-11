@@ -90,7 +90,7 @@ export class ContainerService {
     } catch (error) {
       throw new ConflictException(`Error removing container ${error}`);
     }
-
+    this.socketConnectionManagerService.remove_socket(cubeId);
     return {
       message: 'Container Successfully remove and backedup',
       FsCheck: isUploaded,

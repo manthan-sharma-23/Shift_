@@ -62,8 +62,8 @@ export const configurations = {
     port: GET_PORT(),
     playgroundId: PLAYGROUND_ID(),
     project: {
-      // projectName: PROJECT_NAME(),
-      // projectType: PROJECT_TYPE(),
+      projectName: PROJECT_NAME(),
+      projectType: PROJECT_TYPE(),
     },
   },
   factory: {
@@ -76,5 +76,6 @@ export const configurations = {
   fs: {
     root: path.join(__dirname + "/../"),
     project: path.join(__dirname + "/../project/"),
+    scripts: path.join(__dirname + "/../scripts/"),
   },
 };
