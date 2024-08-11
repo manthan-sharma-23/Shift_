@@ -46,6 +46,7 @@ services:
 networks:
   lynx-network:
     driver: bridge
+  
 
 volumes:
   postgres-data:

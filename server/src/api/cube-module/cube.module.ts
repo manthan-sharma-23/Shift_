@@ -5,6 +5,7 @@ import DatabaseService from 'src/engine/database/Database.service';
 import { JwtService } from 'src/engine/core/services/Jwt.service';
 import { ContainerService } from 'src/engine/core/services/Container.service';
 import SocketConnectionManagerService from 'src/engine/core/services/socket-connection-manager.service';
+import S3Service from 'src/engine/core/services/aws_s3.service';
 
 @Module({
   providers: [
@@ -13,6 +14,7 @@ import SocketConnectionManagerService from 'src/engine/core/services/socket-conn
     JwtService,
     ContainerService,
     SocketConnectionManagerService,
+    S3Service,
   ],
   controllers: [CubeController],
 })

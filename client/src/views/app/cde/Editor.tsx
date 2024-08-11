@@ -10,25 +10,31 @@ import { useEffect, useRef } from "react";
 import { useSetRecoilState } from "recoil";
 import { Socket, io } from "socket.io-client";
 import FileTree from "./FileTree";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation, useParams, useSearchParams } from "react-router-dom";
 import { FILE_ATOM } from "@/core/store/atoms/file.atom";
 import CodeEditor from "./CodeEditor";
 import Footer from "./Footer";
 import Headers from "./Headers";
 import "@xterm/xterm/css/xterm.css";
-import { Ports } from "@/core/types/cube.types";
+import { useQuery } from "@tanstack/react-query";
+import Server from "@/core/api/api";
 
 const Editor = () => {
   const socketRef = useRef<Socket | null>(null);
   const terminalRef = useRef<HTMLDivElement | null>(null);
   const ports_str = window.localStorage.getItem("ports");
-  const ports = JSON.parse(ports_str!) as Ports;
 
+  const { projectId } = useParams();
   const { pathname } = useLocation();
   const [params] = useSearchParams();
 
   const setFileTree = useSetRecoilState<DirectoryStructure[]>(FileTreeAtom);
   const setFile = useSetRecoilState(FILE_ATOM);
+  const { data } = useQuery({
+    queryKey: ["cube", projectId],
+    queryFn: () => new Server().cube.run_cube({ cubeId: projectId! }),
+    throwOnError: true,
+  });
 
   useEffect(() => {
     async function getfile() {
@@ -44,7 +50,8 @@ const Editor = () => {
   }, [params, pathname]);
 
   useEffect(() => {
-    const socket = io(`http://localhost:${ports.ports.express_port}`);
+    window.localStorage.setItem("ports", JSON.stringify(data));
+    const socket = io(`http://localhost:${data?.ports.express_port}`);
 
     socket.on("connect", async () => {
       console.log("Connected to Container");
@@ -104,7 +111,7 @@ const Editor = () => {
   }
 
   return (
-    <div className="h-full w-full flex flex-col justify-center items-center">
+    <div className="h-full w-full flex flex-col justify-center items-center relative">
       <div className="h-[3.5%] w-full bg-primary-black border-b border-gray-500/60">
         <Headers />
       </div>
@@ -132,7 +139,7 @@ const Editor = () => {
           <ResizableHandle className="bg-gray-500" />
           <ResizablePanel defaultSize={30}>
             <iframe
-              src={`http://localhost:${ports.ports.other_port}`}
+              src={`http://localhost:${data?.ports.other_port}`}
               className="h-full w-full"
             />
           </ResizablePanel>

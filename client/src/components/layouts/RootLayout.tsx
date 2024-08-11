@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 const RootLayout = () => {
   const { loading } = useGetUser();
   return (
-    <div className="h-screen w-screen bg-black text-white flex items-center justify-center">
+    <div className="h-screen w-screen bg-black text-white flex items-center justify-center overflow-hidden">
       {loading ? <p>Loading...</p> : <Outlet />}
     </div>
   );

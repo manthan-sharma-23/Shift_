@@ -54,6 +54,10 @@ export default class SocketConnectionManagerService {
     return null;
   }
 
+  public getCubePort(id: string) {
+    return this.express_cubeId_map.get(id);
+  }
+
   create_socket_connection({
     express_port,
     other_port,

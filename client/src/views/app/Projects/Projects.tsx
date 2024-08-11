@@ -5,10 +5,20 @@ import ProjectsList from "./ProjectsList";
 import CreateCube from "@/components/components/app/CreateCube";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Toaster } from "sonner";
+import { GLOBAL_LOADING } from "@/core/store/atoms/globalLoading";
+import { useRecoilValue } from "recoil";
+import Loading from "@/components/components/utility-components/Loading";
 
 const Projects = () => {
+  const globalLoading = useRecoilValue(GLOBAL_LOADING);
+
   return (
-    <div className="h-full w-full flex flex-col justify-start items-center">
+    <div className=" h-full relative w-full flex flex-col justify-start items-center">
+      {globalLoading && (
+        <div className="h-full w-full absolute z-[200] bg-black/80">
+          <Loading />
+        </div>
+      )}
       <div className="h-[25vh] w-full">
         <Banner />
       </div>

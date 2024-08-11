@@ -4,30 +4,23 @@ import cors from "cors";
 import { configurations } from "./config";
 import { Server } from "http";
 import { SocketService } from "./services/socket.service";
-import { getDirStructure } from "./controllers/dir";
+import { router } from "./api/routes";
 
 const app = e();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true, limit: "100mb" }));
 
-app.get("/", (_, res) => {
-  return res.json({ status: "ALIVE 200 🟢" });
-});
-
-app.get("/fs", async (_, res) => {
-  const struct = await getDirStructure();
-  return res.json(struct);
-});
+// http routes
+app.use(router);
 
 const server = new Server(app);
 
+// socket server
 new SocketService(server);
 
 server.listen(configurations.env.port, () => {
-  //   console.info(configurations.factory.icon);
   console.log(
     `🐳 Playground Container Started for ${configurations.env.playgroundId} at ${configurations.env.port}`
   );
-  console.log(configurations.fs.root);
 });

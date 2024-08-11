@@ -20,12 +20,17 @@ const CreateCube = () => {
   const [projectType, setProjectType] = useState("");
   const { mutate, isPending } = useMutation({
     mutationFn: new Server().cube.create_user_cube,
+    onError: (err) => {
+      console.log(err);
+    },
+    onSuccess: () => {
+      window.location.reload();
+    },
   });
 
   const onCreateCube = () => {
     if (projectName && projectType) {
       mutate({ name: projectName, type: projectType });
-      window.location.reload();
     }
   };
 

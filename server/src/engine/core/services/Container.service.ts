@@ -1,8 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  GoneException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Cube } from '@prisma/client';
 import { configurations } from 'src/lib/config';
 import SocketConnectionManagerService from './socket-connection-manager.service';
 import * as Docker from 'dockerode';
+import axios from 'axios';
+import { FileObject } from 'src/engine/types/static/container';
+import S3Service from './aws_s3.service';
 
 @Injectable()
 export class ContainerService {
@@ -11,9 +19,11 @@ export class ContainerService {
     running: 'running',
     exited: 'exited',
   };
+  networkName = 'server_lynx-network';
 
   constructor(
     private readonly socketConnectionManagerService: SocketConnectionManagerService,
+    private readonly s3Service: S3Service,
   ) {
     this.docker = new Docker();
   }
@@ -21,7 +31,7 @@ export class ContainerService {
   private image = configurations.container.user_container_image;
 
   async create_container(cube: Cube) {
-    const container_name = `project-${cube.id}`;
+    const container_name = this.getContainerName(cube.id);
 
     const port1 = await this.socketConnectionManagerService.find_express_port();
     const port2 = await this.socketConnectionManagerService.find_project_port();
@@ -34,8 +44,13 @@ export class ContainerService {
       cube,
     });
 
-    const container = await this.docker.createContainer(container_options);
-    await container.start();
+    const _container = await this.docker.createContainer(container_options);
+    // await _container.start();
+
+    const network = await this.get_network();
+    network.connect({
+      Container: _container.id,
+    });
 
     this.socketConnectionManagerService.create_socket_connection({
       express_port: port1,
@@ -46,8 +61,50 @@ export class ContainerService {
     return { port1, port2 };
   }
 
-  async run_container(cubeId: string) {
-    const container_name = `project-${cubeId}`;
+  async burnContainers(cubeId: string, userId: string) {
+    const containerName = this.getContainerName(cubeId);
+    const port = this.socketConnectionManagerService.getCubePort(cubeId);
+
+    if (!port) {
+      throw new GoneException('No cube found running');
+    }
+    const files = await this.fetchContainerFs(containerName, port.express);
+
+    const isUploaded = await this.s3Service.uploadFiles(files, userId, cubeId);
+
+    if (!isUploaded) {
+      console.log(`Couldn't back up container`);
+      throw new ConflictException(`Couldn't back up container`);
+    }
+
+    const { container } = await this.find_container_with_name(containerName);
+
+    try {
+      await container.stop();
+    } catch (error) {
+      throw new ConflictException(`Error stopping containers ${error}`);
+    }
+
+    try {
+      await container.remove();
+    } catch (error) {
+      throw new ConflictException(`Error removing container ${error}`);
+    }
+
+    return {
+      message: 'Container Successfully remove and backedup',
+      FsCheck: isUploaded,
+    };
+  }
+
+  async fetchContainerFs(container_name: string, port: number) {
+    const data = (await axios.get(`http://${container_name}:${port}/project`))
+      .data as FileObject[];
+    return data;
+  }
+
+  async run_container(cube: Cube) {
+    const container_name = this.getContainerName(cube.id);
     const ports = {
       express_port: 0,
       other_port: 0,
@@ -56,8 +113,8 @@ export class ContainerService {
     const { container, info } =
       await this.find_container_with_name(container_name);
 
-    if (info.State === this.container_state.exited) {
-      await container.start();
+    if (info.State !== this.container_state.running) {
+      container.start();
       await this.delay(100 * 1000);
     }
 
@@ -77,7 +134,20 @@ export class ContainerService {
       }
     });
 
+    this.socketConnectionManagerService.create_socket_connection({
+      express_port: ports.express_port,
+      other_port: ports.other_port,
+      cube,
+    });
+
     return { info, ports };
+  }
+
+  async get_network() {
+    const networks = await this.docker.listNetworks();
+    const info = networks.find((network) => network.Name === this.networkName);
+    const network = this.docker.getNetwork(info.Id);
+    return network;
   }
 
   async find_container_with_name(containerName: string) {
@@ -117,6 +187,7 @@ export class ContainerService {
       Image: image,
       name: containerName,
       Tty: true,
+      Hostname: containerName,
       Cmd: [
         `${port1}`,
         `${port2}`,
@@ -137,6 +208,10 @@ export class ContainerService {
       },
     };
     return options;
+  }
+
+  getContainerName(cubeId: string) {
+    return `project-${cubeId}`;
   }
 
   private delay(ms: number) {
