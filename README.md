@@ -1,4 +1,7 @@
 # Lynx - An Online Code Editor
+---
+
+### (Still under-development)
 
 Lynx is a sophisticated online code editor integrated with container orchestration, designed to streamline the development process. It provides a unified platform for writing, building, and deploying code with robust container management capabilities.
 
