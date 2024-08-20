@@ -92,6 +92,29 @@ export default class Server {
     return data;
   };
 
+  private burn_cube = async ({ cubeId }: { cubeId: string }) => {
+    const data = (
+      await axios.delete(this.server_url + `/v1/cube/stop/${cubeId}`, {
+        headers: {
+          Authorization: this.token,
+        },
+      })
+    ).data;
+
+    return data;
+  };
+  private reinit_cube = async ({ cubeId }: { cubeId: string }) => {
+    const data = (
+      await axios.put(this.server_url + `/v1/cube/reinit/${cubeId}`, {
+        headers: {
+          Authorization: this.token,
+        },
+      })
+    ).data;
+
+    return data;
+  };
+
   get user() {
     return {
       get_user: this.get_user,
@@ -105,6 +128,8 @@ export default class Server {
       get_user_cubes: this.get_user_cubes,
       create_user_cube: this.create_user_cube,
       run_cube: this.run_cube,
+      burn_cube: this.burn_cube,
+      reinit_cube: this.reinit_cube,
     };
   }
 }

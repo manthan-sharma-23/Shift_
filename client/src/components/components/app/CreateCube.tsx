@@ -30,7 +30,7 @@ const CreateCube = () => {
 
   const onCreateCube = () => {
     if (projectName && projectType) {
-      mutate({ name: projectName, type: projectType });
+      mutate({ name: projectName.toLowerCase(), type: projectType });
     }
   };
 

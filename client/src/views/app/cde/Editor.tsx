@@ -7,7 +7,7 @@ import { FileTreeAtom } from "@/core/store/atoms/file_tree.atom";
 import { DirectoryStructure } from "@/core/types/cde.types";
 import { Terminal as XTerminal } from "@xterm/xterm";
 import { useEffect, useRef } from "react";
-import { useSetRecoilState } from "recoil";
+import { useResetRecoilState, useSetRecoilState } from "recoil";
 import { Socket, io } from "socket.io-client";
 import FileTree from "./FileTree";
 import { useLocation, useParams, useSearchParams } from "react-router-dom";
@@ -29,7 +29,9 @@ const Editor = () => {
   const [params] = useSearchParams();
 
   const setFileTree = useSetRecoilState<DirectoryStructure[]>(FileTreeAtom);
+  const resetFileTree = useResetRecoilState(FileTreeAtom);
   const setFile = useSetRecoilState(FILE_ATOM);
+
   const { data } = useQuery({
     queryKey: ["cube", projectId],
     queryFn: () => new Server().cube.run_cube({ cubeId: projectId! }),
@@ -84,11 +86,25 @@ const Editor = () => {
       }
     });
 
+    window.onbeforeunload = () => {
+      disconnect();
+    };
+
     return () => {
+      resetFileTree();
       socket.disconnect();
       socketRef.current = null;
     };
   }, []);
+
+  async function disconnect() {
+    console.log("Disconnect");
+
+    resetFileTree();
+    socketRef.current?.disconnect();
+    // new Server().cube.burn_cube({ cubeId: projectId! });
+    socketRef.current = null;
+  }
 
   function sendRequest(type: string, data: unknown = {}) {
     return new Promise((resolve, reject) => {

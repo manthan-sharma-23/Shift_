@@ -30,4 +30,6 @@ model Cube {
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
   userId    String
+  status    String   @default("stopped")
+  updatedAt DateTime @default(now()) @updatedAt
 }

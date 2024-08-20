@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useSetRecoilState } from "recoil";
 import { PORTS_ATOM } from "@/core/store/atoms/ports.atom";
 import { GLOBAL_LOADING } from "@/core/store/atoms/globalLoading";
+
 const ProjectsList = () => {
   const { data: cubes, isLoading } = useQuery({
     queryFn: () => new Server().cube.get_user_cubes(),
@@ -42,8 +43,6 @@ function CubeC({ cube }: { cube: Cube }) {
       setLoading(false);
     },
     onSuccess: (data) => {
-      console.log("MUTATION SUCCESS", data);
-
       if (data) {
         setPorts(data);
         window.localStorage.setItem("ports", JSON.stringify(data));
@@ -51,7 +50,7 @@ function CubeC({ cube }: { cube: Cube }) {
       toast.success("Cubed successfully , ports set alive", {
         richColors: true,
       });
-      navigate(`/app/project/${cube.id}`);
+      window.location.assign(`/app/project/${cube.id}`);
       setLoading(false);
     },
   });
