@@ -2,6 +2,8 @@
 
 Lynx is a sophisticated online code editor integrated with container orchestration, designed to streamline the development process. It provides a unified platform for writing, building, and deploying code with robust container management capabilities.
 
+![Lynx Interface](https://d22otbfo28bxw0.cloudfront.net/synapse-storage/assets/Screenshot%20from%202024-08-21%2002-38-24.png)
+
 ## Tech Stack
 
 ### Server-Side Development
@@ -25,4 +27,3 @@ Lynx is a sophisticated online code editor integrated with container orchestrati
 - **Recoil**: Manages application state efficiently, providing a scalable solution for complex state management.
 - **WebSockets**: Enables real-time updates and communication between the client and server.
 
-![Lynx Interface](https://d22otbfo28bxw0.cloudfront.net/synapse-storage/assets/Screenshot%20from%202024-08-21%2002-38-24.png)
