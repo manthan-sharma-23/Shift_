@@ -29,6 +29,8 @@ const FileTree = () => {
   } | null>(null);
   const [newName, setNewName] = useState("");
 
+  console.log("FILE TREE", fileTree);
+
   const handleCreate = () => {
     if (isCreating && newName.trim()) {
       // Handle the creation of new file or folder

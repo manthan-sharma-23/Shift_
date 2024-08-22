@@ -11,6 +11,7 @@ import * as Docker from 'dockerode';
 import axios from 'axios';
 import { FileObject } from 'src/engine/types/static/container';
 import S3Service from './aws_s3.service';
+import DatabaseService from 'src/engine/database/Database.service';
 
 @Injectable()
 export class ContainerService {
@@ -24,6 +25,7 @@ export class ContainerService {
   constructor(
     private readonly socketConnectionManagerService: SocketConnectionManagerService,
     private readonly s3Service: S3Service,
+    private readonly databaseService: DatabaseService,
   ) {
     this.docker = new Docker();
   }
@@ -66,6 +68,15 @@ export class ContainerService {
     const containerName = this.getContainerName(cubeId);
     const port = this.socketConnectionManagerService.getCubePort(cubeId);
 
+    await this.databaseService.cube.update({
+      where: {
+        id: cubeId,
+      },
+      data: {
+        status: 'preparing',
+      },
+    });
+
     if (!port) {
       throw new GoneException('No cube found running');
     }
@@ -92,6 +103,16 @@ export class ContainerService {
       throw new ConflictException(`Error removing container ${error}`);
     }
     this.socketConnectionManagerService.remove_socket(cubeId);
+
+    await this.databaseService.cube.update({
+      where: {
+        id: cubeId,
+      },
+      data: {
+        status: 'stopped',
+      },
+    });
+
     return {
       message: 'Container Successfully remove and backedup',
       FsCheck: isUploaded,
@@ -111,12 +132,21 @@ export class ContainerService {
       other_port: 0,
     };
 
+    await this.databaseService.cube.update({
+      where: {
+        id: cube.id,
+      },
+      data: {
+        status: 'preparing',
+      },
+    });
+
     const { container, info } =
       await this.find_container_with_name(container_name);
 
     if (info.State !== this.container_state.running) {
       container.start();
-      await this.delay(100 * 1000);
+      await this.delay(50 * 1000);
     }
 
     info.Ports.forEach((port) => {
@@ -139,6 +169,15 @@ export class ContainerService {
       express_port: ports.express_port,
       other_port: ports.other_port,
       cube,
+    });
+
+    await this.databaseService.cube.update({
+      where: {
+        id: cube.id,
+      },
+      data: {
+        status: 'running',
+      },
     });
 
     return { info, ports };

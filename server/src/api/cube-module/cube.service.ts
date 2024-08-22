@@ -47,6 +47,9 @@ export default class CubeService {
       where: {
         userId,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     return cubes;

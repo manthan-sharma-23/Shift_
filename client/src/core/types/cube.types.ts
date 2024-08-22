@@ -2,8 +2,10 @@ export interface Cube {
   id: string;
   name: string;
   createdAt: Date;
+  updatedAt: Date;
   type: CubeType;
   userId: string;
+  status: "running" | "stopped" | "preparing";
 }
 
 export enum CubeType {
