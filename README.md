@@ -1,4 +1,4 @@
-# Lynx - An Online Code Editor
+# Shift_ - An Online Code Editor
 ---
 
 ### (Still under-development)
