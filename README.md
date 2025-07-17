@@ -1,11 +1,8 @@
 # Shift_ - An Online Code Editor
 ---
 
-### (Still under-development)
+https://github.com/user-attachments/assets/3bf5fc95-01b0-49bb-b3e9-fc1034919391
 
-Shift_ is a sophisticated online code editor integrated with container orchestration, designed to streamline the development process. It provides a unified platform for writing, building, and deploying code with robust container management capabilities.
-
-![Lynx Interface](https://d22otbfo28bxw0.cloudfront.net/synapse-storage/assets/Screenshot%20from%202024-08-21%2002-38-24.png)
 
 ## Tech Stack
 
